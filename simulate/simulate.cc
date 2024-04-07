@@ -1568,9 +1568,9 @@ void UiEvent(mjuiState* state) {
 
         // not in scrubber: step, add to history buffer
         else {
-          ROS_INJECTION_BEFORE_MJ_STEP
+          ROS_INJECTION_BEFORE_MJ_STEP(sim->m_, sim->d_)
           mj_step(sim->m_, sim->d_);
-          ROS_INJECTION_AFTER_MJ_STEP
+          ROS_INJECTION_AFTER_MJ_STEP(sim->m_, sim->d_)
           sim->AddToHistory();
         }
 

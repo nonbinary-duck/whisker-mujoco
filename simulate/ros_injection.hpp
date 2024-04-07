@@ -4,17 +4,18 @@
 #pragma once
 
 #include <iostream>
+#include <mujoco/mujoco.h>
 
 // Simple macros for before and after occurrences of calls to mjStep
-#define ROS_INJECTION_BEFORE_MJ_STEP injection_space::beforeMjStep();
-#define ROS_INJECTION_AFTER_MJ_STEP  injection_space::afterMjStep();
+#define ROS_INJECTION_BEFORE_MJ_STEP(model, data) injection_space::beforeMjStep(model, data);
+#define ROS_INJECTION_AFTER_MJ_STEP(model, data)  injection_space::afterMjStep(model, data);
 
 namespace injection_space
 {
     
-    void beforeMjStep() noexcept;
+    void beforeMjStep(mjModel *model, mjData *data) noexcept;
 
-    void afterMjStep() noexcept;
+    void afterMjStep(mjModel *model, mjData *data) noexcept;
        
 } // namespace injection_space
 

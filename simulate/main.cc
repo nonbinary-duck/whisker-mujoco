@@ -373,9 +373,9 @@ void PhysicsLoop(mj::Simulate& sim) {
             sim.speed_changed = false;
 
             // run single step, let next iteration deal with timing
-            ROS_INJECTION_BEFORE_MJ_STEP
+            ROS_INJECTION_BEFORE_MJ_STEP(m, d)
             mj_step(m, d);
-            ROS_INJECTION_AFTER_MJ_STEP
+            ROS_INJECTION_AFTER_MJ_STEP(m, d)
             stepped = true;
           }
 
@@ -397,9 +397,9 @@ void PhysicsLoop(mj::Simulate& sim) {
               }
 
               // call mj_step
-              ROS_INJECTION_BEFORE_MJ_STEP
+              ROS_INJECTION_BEFORE_MJ_STEP(m, d)
               mj_step(m, d);
-              ROS_INJECTION_AFTER_MJ_STEP
+              ROS_INJECTION_AFTER_MJ_STEP(m, d)
               stepped = true;
 
               // break if reset

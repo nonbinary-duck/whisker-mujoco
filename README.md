@@ -2,7 +2,7 @@
 
 This is a setup in mujoco for tactile sensing using artificial whiskers, integrated with ROS.
 
-This is not an iteration of MuJoCo or any kind of valuable repo to be pushed upstream.
+This is not an iteration of MuJoCo or a kind of repo to be pushed upstream.
 
 ## Building
 

@@ -3,14 +3,14 @@
 namespace injection_space
 {
     
-    void beforeMjStep() noexcept
+    void beforeMjStep(mjModel *model, mjData *data) noexcept
     {
 
     }
 
-    void afterMjStep() noexcept
-    {
-        std::cout << "Step" << std::endl;
+    void afterMjStep(mjModel *model, mjData *data) noexcept
+    {    
+        std::cout << model->names << std::endl;
     }
        
 } // namespace injection_space
