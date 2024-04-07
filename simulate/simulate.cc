@@ -36,6 +36,8 @@
 #include "platform_ui_adapter.h"
 #include "array_safety.h"
 
+#include "ros_injection.hpp"
+
 // When launched via an App Bundle on macOS, the working directory is the path to the App Bundle's
 // resource directory. This causes files to be saved into the bundle, which is not the desired
 // behavior. Instead, we open a save dialog box to ask the user where to put the file.
@@ -1566,7 +1568,9 @@ void UiEvent(mjuiState* state) {
 
         // not in scrubber: step, add to history buffer
         else {
+          ROS_INJECTION_BEFORE_MJ_STEP
           mj_step(sim->m_, sim->d_);
+          ROS_INJECTION_AFTER_MJ_STEP
           sim->AddToHistory();
         }
 

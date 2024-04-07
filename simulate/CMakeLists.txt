@@ -129,7 +129,7 @@ add_library(mujoco::libsimulate ALIAS libsimulate)
 target_sources(
   libsimulate
   PUBLIC simulate.h
-  PRIVATE simulate.cc array_safety.h
+  PRIVATE simulate.cc array_safety.h ros_injection.hpp ros_injection.cpp
 )
 target_include_directories(libsimulate PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(libsimulate PRIVATE ${MUJOCO_SIMULATE_COMPILE_OPTIONS})
@@ -151,7 +151,7 @@ if(SIMULATE_BUILD_EXECUTABLE)
     set(SIMULATE_RESOURCE_FILES "")
   endif()
 
-  add_executable(simulate main.cc array_safety.h ${SIMULATE_RESOURCE_FILES})
+  add_executable(simulate main.cc array_safety.h ros_injection.hpp ros_injection.cpp ${SIMULATE_RESOURCE_FILES})
   target_compile_options(simulate PUBLIC ${MUJOCO_SIMULATE_COMPILE_OPTIONS})
   if(WIN32)
     add_custom_command(

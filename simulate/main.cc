@@ -29,6 +29,8 @@
 #include "simulate.h"
 #include "array_safety.h"
 
+#include "ros_injection.hpp"
+
 #define MUJOCO_PLUGIN_DIR "mujoco_plugin"
 
 extern "C" {
@@ -371,7 +373,9 @@ void PhysicsLoop(mj::Simulate& sim) {
             sim.speed_changed = false;
 
             // run single step, let next iteration deal with timing
+            ROS_INJECTION_BEFORE_MJ_STEP
             mj_step(m, d);
+            ROS_INJECTION_AFTER_MJ_STEP
             stepped = true;
           }
 
@@ -393,7 +397,9 @@ void PhysicsLoop(mj::Simulate& sim) {
               }
 
               // call mj_step
+              ROS_INJECTION_BEFORE_MJ_STEP
               mj_step(m, d);
+              ROS_INJECTION_AFTER_MJ_STEP
               stepped = true;
 
               // break if reset
