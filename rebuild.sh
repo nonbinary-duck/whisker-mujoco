@@ -8,17 +8,13 @@ if [ ! -f "./bin/simulate"  ] || [ ! -f "./mujocoConfig.cmake" ]; then
 	exit
 fi
 
-cmake ..
-
-make -j40
-
-cmake --install . --prefix ./install
+cmake .. && make -j40 && cmake --install . --prefix ./install
 
 if [ ! -d "./install/bin/mujoco_plugin" ]; then
 	mkdir ./install/bin/mujoco_plugin
 
-	ln -sr ./lib/libactuator.so   ./install/bin/mujoco_plugin/.
-	ln -sr ./lib/libelasticity.so ./install/bin/mujoco_plugin/.
-	ln -sr ./lib/libsdf.so        ./install/bin/mujoco_plugin/.
-	ln -sr ./lib/libsensor.so     ./install/bin/mujoco_plugin/.
+	cp ./lib/libactuator.so   ./install/bin/mujoco_plugin/.
+	cp ./lib/libelasticity.so ./install/bin/mujoco_plugin/.
+	cp ./lib/libsdf.so        ./install/bin/mujoco_plugin/.
+	cp ./lib/libsensor.so     ./install/bin/mujoco_plugin/.
 fi
