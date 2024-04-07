@@ -71,6 +71,11 @@
         </default>
     </default>
 
+    <!-- An identifyer to tell our injected code that there is something for it to do -->
+    <custom>
+        <numeric name="whskmdl" data="0" size="1" />
+    </custom>
+
     <worldbody>
 
         <body name="terrains">

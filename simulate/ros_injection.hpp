@@ -12,10 +12,21 @@
 
 namespace injection_space
 {
-    
-    void beforeMjStep(mjModel *model, mjData *data) noexcept;
+    /**
+     * @brief Executed immediately before any appearance of mj_step in the simulate code
+     * 
+     * @param model The MuJoCo model (initial pose)
+     * @param data The current simulation state (current pose)
+     */
+    void beforeMjStep(const mjModel *model, mjData *data) noexcept;
 
-    void afterMjStep(mjModel *model, mjData *data) noexcept;
+    /**
+     * @brief Executed immediately after any appearance of mj_step in the simulate code
+     * 
+     * @param model The MuJoCo model (initial pose)
+     * @param data The current simulation state (current pose)
+     */
+    void afterMjStep(const mjModel *model, mjData *data) noexcept;
        
 } // namespace injection_space
 
