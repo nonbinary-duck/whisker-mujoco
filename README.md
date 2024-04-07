@@ -37,7 +37,7 @@ cp lib/libsensor.so     ./install/bin/mujoco_plugin/.
 cd ..
 
 # Uncomment below to run simulate application with whisker model (from project root after running above command)
-# ./build/install/bin/simulate ./whisker-model/coil_test.xml
+# ./build/install/bin/simulate ./whisker-model/whisker_model.xml
 ```
 
 ## What is MuJoCo
