@@ -27,11 +27,11 @@ cmake --install . --prefix ./install
 # This directory is what the `simulate` application expects (we don't change this behaviour)
 mkdir ./install/bin/mujoco_plugin
 
-# Copy the four default plugins over
-cp lib/libactuator.so   ./install/bin/mujoco_plugin/.
-cp lib/libelasticity.so ./install/bin/mujoco_plugin/.
-cp lib/libsdf.so        ./install/bin/mujoco_plugin/.
-cp lib/libsensor.so     ./install/bin/mujoco_plugin/.
+# Make a symbolic link to the four default plugins
+ln -sr ./lib/libactuator.so   ./install/bin/mujoco_plugin/.
+ln -sr ./lib/libelasticity.so ./install/bin/mujoco_plugin/.
+ln -sr ./lib/libsdf.so        ./install/bin/mujoco_plugin/.
+ln -sr ./lib/libsensor.so     ./install/bin/mujoco_plugin/.
 
 # CD back to project root
 cd ..
