@@ -1,0 +1,292 @@
+<!-- Copyright 2021 DeepMind Technologies Limited
+
+     Licensed under the Apache License Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing software
+     distributed under the License is distributed on an "AS IS" BASIS
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<mujoco model="Coil">
+    <include file="scene.xml" />
+
+    <compiler convexhull="false" />
+    
+    <asset>
+        <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3"
+            rgb2=".2 .3 .4" />
+        <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2" />
+        <mesh name="chasis" scale=".02 .012 .003"
+            vertex=" 9   2   0
+              -10  10  10
+               9  -2   0
+               10  3  -10
+               10 -3  -10
+              -8   10 -10
+              -10 -10  10
+              -8  -10 -10
+              -5   0   20" />
+    </asset>
+
+    <asset>
+        <hfield file="dunes_low.png"        size="3.0 3.0 0.25 0.1" />
+        <hfield file="ripples_low.png"      size="3.0 3.0 0.02 0.1" />
+        <hfield file="promt2walk_bumpy.png" size="15.0 15.0 0.04 0.1" />
+    </asset>
+
+
+    <extension>
+        <plugin plugin="mujoco.elasticity.cable" />
+    </extension>
+
+    <statistic center="0 0 .2" extent="1" />
+
+    <compiler autolimits="true" />
+
+    <visual>
+        <global elevation="-30" />
+    </visual>
+
+    <default>
+        <geom solref="0.01 1" solimp=".95 .99 .0001" />
+    </default>
+
+    <default>
+        <joint damping=".03" actuatorfrcrange="-0.5 0.5" />
+        <default class="wheel">
+            <geom type="cylinder" size=".06 .02" rgba=".5 .5 1 1" />
+        </default>
+        <default class="decor">
+            <site type="box" rgba=".5 1 .5 1" />
+        </default>
+        <default class="weight">
+            <geom rgba=".8 .4 .8 1"/>
+            <site rgba=".8 .4 .8 1"/>
+        </default>
+    </default>
+
+    <worldbody>
+
+        <body name="terrains">
+            <geom type="hfield" hfield="promt2walk_bumpy" pos=" 17 17  0.1" />
+            <geom type="hfield" hfield="dunes_low"        pos="-7  5   0.1" />
+            <geom type="hfield" hfield="ripples_low"      pos="-1  5   0.1" />
+            <!-- <geom type="hfield" hfield="ripples_low" /> -->
+            <!-- <geom type="hfield" hfield="promt2walk-bumpy" /> -->
+            <!-- <geom type="mesh" mesh="terrains" euler="90 0 0" pos="0 2 0.1" /> -->
+            <!-- <geom type="mesh" mesh="low-verts-1" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-2" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-3" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-4" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-5" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-6" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-7" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-8" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-9" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-10" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-11" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-12" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-13" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-14" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-15" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-16" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-17" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-18" euler="90 0 0" pos="0 2 0.1"/>
+            <geom type="mesh" mesh="low-verts-19" euler="90 0 0" pos="0 2 0.1"/> -->
+        </body>
+
+        <!-- Density uses SI units (kg/m³) so 1000 is water -->
+        <body name="weight" childclass="weight" pos="0.5 0 1">
+            <freejoint/>
+            <geom name="weight" type="box" size=".15 .15 .15" density="1000" />
+        </body>
+
+
+        <body name="car" pos="0 0 .03">
+            <freejoint />
+
+            <!-- The whisker -->
+            <body pos="0.2 0.005 0" euler="0.0 0.0 55.0"  >
+                <joint name="whisker0"  />
+
+                <composite prefix="whisker_front_left" type="cable" curve=" s" initial="none" count="10 1 1" size="0.1 .1 4">        
+                    <plugin plugin="mujoco.elasticity.cable">
+                        <!--Units aare in Pa (SI)-->
+                        <config key="twist" value="5e8" />
+                        <config key="bend"  value="15e8" />
+                        <config key="vmax"  value="0.005" />
+                        <config key="flat"  value="true" />
+                    </plugin>
+                    <joint kind="main" damping="0.12" armature="0.01" />
+                    <geom type="capsule" size=".00125" rgba=".8 .2 .1 1" />
+                </composite>
+            </body>
+            <body pos="0.2 -0.005 0" euler="0.0 0.0 -55.0" >
+                <joint name="whisker1"  />
+
+                <composite prefix="whisker_front_right" type="cable" curve=" s" initial="none" count="10 1 1" size="0.1 .1 4">        
+                    <plugin plugin="mujoco.elasticity.cable">
+                        <!--Units aare in Pa (SI)-->
+                        <config key="twist" value="5e8" />
+                        <config key="bend"  value="15e8" />
+                        <config key="vmax"  value="0.005" />
+                        <config key="flat"  value="true" />
+                    </plugin>
+                    <joint kind="main" damping="0.12" armature="0.01" />
+                    <geom type="capsule" size=".00125" rgba=".8 .2 .1 1" />
+                </composite>
+            </body>
+
+            <!-- The top whisker resoviour -->
+            <composite prefix="whisker_top" type="cable" offset="-0.2 0 0.05" curve="sin(s) cos(s) s" initial="none" count="25 1 1" size="0.1 .05 4">
+                <!-- <joint name="whisker_front" /> -->
+
+                <plugin plugin="mujoco.elasticity.cable">
+                    <!--Units aare in Pa (SI)-->
+                    <config key="twist" value="5e8" />
+                    <config key="bend"  value="15e7" />
+                    <config key="vmax"  value="0.025" />
+                    <config key="flat"  value="false" />
+                </plugin>
+                <joint kind="main" damping="0.12" armature="0.01" />
+                <geom type="capsule" size=".005" rgba=".8 .2 .1 1" />
+            </composite>
+            
+            <!-- <light name="top light" pos="0 0 2" mode="trackcom" diffuse=".4 .4 .4" /> -->
+            <!-- The car -->
+            <geom name="chasis" type="mesh" mesh="chasis"/>
+            <geom name="front wheel" pos=".16 0 -.015" type="sphere" size=".03" condim="1" priority="1" />
+            <!-- <light name="front light" pos=".1 0 .02" dir="2 0 -1" diffuse="1 1 1" /> -->
+            <body name="left wheel" pos="-.18 .12 0" zaxis="0 1 0">
+                <joint name="left" />
+                <geom class="wheel" />
+                <site class="decor" size=".006 .025 .024" />
+                <site class="decor" size=".025 .006 .024" />
+            </body>
+            <body name="right wheel" pos="-.18 -.12 0" zaxis="0 1 0">
+                <joint name="right" />
+                <geom class="wheel" />
+                <site class="decor" size=".006 .025 .024" />
+                <site class="decor" size=".025 .006 .024" />
+            </body>
+        </body>
+
+        <composite prefix="free" type="cable" offset="-.5 0 .3" initial="free"
+            vertex="
+        0.1         0.          0.
+        0.0809017   0.05877853  0.001256637
+        0.0309017   0.09510565  0.002513274
+       -0.0309017   0.09510565  0.003769911
+       -0.0809017   0.05877853  0.005026548
+       -0.1         0.          0.006283185
+       -0.0809017  -0.05877853  0.007539822
+       -0.0309017  -0.09510565  0.008796459
+        0.0309017  -0.09510565  0.010053096
+        0.0809017  -0.05877853  0.011309734
+        0.1        -0.          0.012566371
+        0.0809017   0.05877853  0.01256637
+        0.0309017   0.09510565  0.02513274
+       -0.0309017   0.09510565  0.03769911
+       -0.0809017   0.05877853  0.05026548
+       -0.1         0.          0.06283185
+       -0.0809017  -0.05877853  0.07539822
+       -0.0309017  -0.09510565  0.08796459
+        0.0309017  -0.09510565  0.10053096
+        0.0809017  -0.05877853  0.11309734
+        0.1        -0.          0.12566371
+        0.0809017   0.05877853  0.13823008
+        0.0309017   0.09510565  0.15079645
+       -0.0309017   0.09510565  0.16336282
+       -0.0809017   0.05877853  0.17592919
+       -0.1         0.          0.18849556
+       -0.0809017  -0.05877853  0.20106193
+       -0.0309017  -0.09510565  0.2136283
+        0.0309017  -0.09510565  0.22619467
+        0.0809017  -0.05877853  0.23876104
+        0.1        -0.          0.25132741">
+            <plugin plugin="mujoco.elasticity.cable">
+                <!--Units
+        are in Pa (SI)-->
+                <config key="twist" value="5e8" />
+                <config key="bend" value="15e8" />
+                <config key="vmax" value="0.5" />
+            </plugin>
+            <joint kind="main" damping="0.12" armature="0.01" />
+            <geom type="capsule" size=".005" rgba=".8 .2 .1 1" />
+        </composite>
+        <!--    <composite prefix="actuated" type="cable" curve="cos(s) sin(s) s" count="41 1 1"
+      size="0.251327412 .1 4" offset="0.25 0 .05" initial="fixed">
+      <plugin plugin="mujoco.elasticity.cable"> -->
+        <!--Units
+    are in Pa (SI)--> <!--
+        <config key="twist" value="5e8"/>
+        <config key="bend" value="15e8"/>
+        <config key="vmax" value="2"/>
+      </plugin>
+      <joint kind="main" damping="0.1" armature="0.01"/>
+      <geom type="capsule" size=".005" rgba=".8 .2 .1 1"/>
+    </composite>
+    <body name="slider" pos="0.35 0 0.301327412">
+      <joint name="slide" type="slide" axis="0 0 1" damping="5"/>
+      <geom size=".01"/>
+    </body> -->
+    </worldbody>
+
+    <!-- <equality>
+    <connect name="right_boundary" body1="actuatedB_last" body2="slider" anchor="0.03 0 0"
+  solref="0.0002 1"/>
+  </equality> -->
+
+    <!-- <contact>
+    <exclude body1="actuatedB_last" body2="slider"/>
+  </contact> -->
+
+    <!-- <actuator>
+    <position joint="slide" name="extend" gear="1 0 0 0 0 0" ctrlrange="-2.25 10" kp="100"/>
+  </actuator> -->
+
+
+    <tendon>
+        <fixed name="whisk0">
+            <joint joint="whisker0" coef="1.0" />
+        </fixed>
+
+        <fixed name="whisk1">
+            <joint joint="whisker1" coef="1.0" />
+        </fixed>
+    </tendon>
+
+    <actuator>
+        <position name="whisk0" tendon="whisk0" />
+        <position name="whisk1" tendon="whisk1" />
+    </actuator>
+  
+    <!-- Car Stuff -->
+  
+    <tendon>
+        <fixed name="forward">
+            <joint joint="left" coef=".5" />
+            <joint joint="right" coef=".5" />
+        </fixed>
+        <fixed name="turn">
+            <joint joint="left" coef="-.5" />
+            <joint joint="right" coef=".5" />
+        </fixed>
+    </tendon>
+
+    <actuator>
+        <motor name="forward" tendon="forward" ctrlrange="-.50 1.25" />
+        <motor name="turn" tendon="turn" ctrlrange="-0.50 0.50" />
+    </actuator>
+
+    <sensor>
+        <jointactuatorfrc name="right" joint="right" />
+        <jointactuatorfrc name="left" joint="left" />
+    </sensor>
+</mujoco>

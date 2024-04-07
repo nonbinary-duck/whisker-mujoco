@@ -10,6 +10,9 @@
 *.so
 *.so.*
 
+# Don't commit blender temporary files
+*.blend1
+
 # Exclude editor config
 .vscode/
 .vs/
