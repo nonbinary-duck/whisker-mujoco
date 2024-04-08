@@ -34,6 +34,7 @@ project(
   HOMEPAGE_URL "https://mujoco.org"
 )
 
+
 enable_language(C)
 enable_language(CXX)
 if(APPLE)
@@ -43,6 +44,9 @@ endif()
 
 option(SIMULATE_BUILD_EXECUTABLE "Build the simulate executable binary." ON)
 option(SIMULATE_GLFW_DYNAMIC_SYMBOLS "Whether to resolve GLFW symbols dynamically." OFF)
+
+set_directory_properties(PROPERTIES CXX_STANDARD 23 C_STANDARD 23)
+set_directory_properties(PROPERTIES CXX_STANDARD_REQUIRED ON C_STANDARD_REQUIRED ON)
 
 # Check if we are building as standalone project.
 set(SIMULATE_STANDALONE OFF)

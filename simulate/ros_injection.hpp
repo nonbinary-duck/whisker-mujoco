@@ -13,6 +13,18 @@
 namespace injection_space
 {
     /**
+     * @brief Records the current state 
+     */
+    struct RosInjectionState
+    {
+        // Step counter (counts afterMjStep)
+        size_t step;
+        // False when current scene is the whisker
+        bool isBadScene;
+    };
+    
+    
+    /**
      * @brief Executed immediately before any appearance of mj_step in the simulate code
      * 
      * @param model The MuJoCo model (initial pose)
@@ -27,6 +39,14 @@ namespace injection_space
      * @param data The current simulation state (current pose)
      */
     void afterMjStep(const mjModel *model, mjData *data) noexcept;
+
+    /**
+     * @brief A struct to record the current state across all steps
+     */
+    static RosInjectionState state{
+        .step = 0,
+        .isBadScene = false
+    };
        
 } // namespace injection_space
 
